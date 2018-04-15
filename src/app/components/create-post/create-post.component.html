@@ -1,0 +1,18 @@
+<div appdropZone (hovered)="toggleHover($event)" (dropped)="startUpload($event)">
+
+    <p>Drag and Drop a File</p>
+    <div class="file">
+        <label></label>
+        <input type="file" (change)="startUpload($event.target.files)">
+    </div>
+    <button (click)="task.cancel()">Cancel</button>
+
+</div>
+
+<div *ngIf="percent | async as percent">
+    <progress [value]="percent" max="100"></progress>
+</div>
+
+<div *ngIf="downloadUrl | async as url">
+    <img [src]="url">
+</div>

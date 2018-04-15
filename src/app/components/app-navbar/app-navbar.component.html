@@ -1,0 +1,22 @@
+<header class="header header-6">
+    <div class="branding">
+        Which?
+    </div>
+    <div class="header-nav">
+        <a class="active nav-link nav-text">Feed</a>
+        <a routerLink="/post" class="nav-link nav-text">Post</a>
+    </div>
+    <!-- <span> {{ appUser.name }}</span> -->
+    <div class="header-actions">
+        <div *ngIf="!(auth.user | async)?.uid">
+            <button type="button" (click)="auth.login()" class="nav-link nav-icon">
+          Login
+        </button>
+        </div>
+        <div *ngIf="(auth.user | async)?.uid">
+            <button type="button" (click)="auth.logout()" class="nav-link nav-icon">
+                Logout
+            </button>
+        </div>
+    </div>
+</header>
