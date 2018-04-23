@@ -4,6 +4,7 @@ export interface User {
     uid: string;
     name: string;
     email: string;
-    posts: Post[];
+    userName: string;
+    photoUrl: string;
   }
 

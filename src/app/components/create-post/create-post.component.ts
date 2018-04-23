@@ -24,11 +24,11 @@ import { getLocaleDateTimeFormat } from '@angular/common';
 export class CreatePostComponent {
   posts$: AngularFireList<Post[]>;
   post$: AngularFireObject<Post>;
-  isActive: boolean;
+  isUploadActive: boolean;
   createdDate: Date;
   image: Picture;
   task: AngularFireUploadTask;
-  percent: Observable<number>;
+  percentage: Observable<number>;
   snapshot: Observable<any>;
   downloadUrl: Observable<string>;
   isHovering: boolean;
@@ -36,74 +36,138 @@ export class CreatePostComponent {
   title: string;
   userName: string;
 
-
-
   constructor(
     private postService: PostService,
     private userService: UserService,
     private afStorage: AngularFireStorage,
-    private db: AngularFireDatabase,
+    private db: AngularFirestore,
     private afAuth: AngularFireAuth,
 
   ) {
-    const bindPost = db.object('post').valueChanges();
-    this.afAuth.authState.subscribe(user => {
-      if (user) { return this.userId = user.uid;
-       }
-  });
+  //   const bindPost = db.object('post').valueChanges();
+  //   this.afAuth.authState.subscribe(user => {
+  //     if (user) { return this.userId = user.uid;
+  //      }
+  // });
   }
 
-startUpload(event: FileList) {
-  const file = event.item(0);
-  if (file.type.split('/')[0] !== 'image') {
-    console.log('unsupported file type');
-    return;
+  toggleHover(event: boolean) {
+    this.isHovering = event;
   }
-  const path = `images/${new Date().getTime()}_${file.name}`;
-  this.task = this.afStorage.upload(path, file);
-  this.percent = this.task.percentageChanges();
-  this.snapshot = this.task.snapshotChanges().pipe(
-    tap(snap => {
-      if (snap.bytesTransferred === snap.totalBytes) {
-        this.db.list(`posts/${this.userId}`).push({ path});
-      }
-    })
-  );
-  this.downloadUrl = this.task.downloadURL();
-  console.log(this.downloadUrl);
-}
 
 
-savePost(post) {
-  const post$ = this.db.object('post');
-  post$.set({
-    title: this.title,
-    imageUrls: this.downloadUrl,
-    authorID: this.userId,
-    authorName: this.userName,
-    voteCount: 0,
-    voters: [],
-    isActive: true,
-    createdDateTime: Date.now(),
-    endDateTime: Date.now(),
-  });
-}
+  startUpload(event: FileList) {
+    // The File object
+    const file = event.item(0);
 
+    // Client-side validation example
+    if (file.type.split('/')[0] !== 'image') {
+      console.error('unsupported file type :( ');
+      return;
+    }
 
+    // The storage path
+    const path = `/${new Date().getTime()}_${file.name}`;
 
-  // uploadFile(event: any ) {
-  //   this.postService.uploadFiletoStorage(event);
-  // }
+    // The main task
+    this.task = this.afStorage.upload(path, file, );
 
-  // savePost(post) {
-  //   const createdDate = firebase.database.ServerValue.TIMESTAMP;
-  //   const createdBy = this.postService.userId;
-  //   this.postService.savePost(post);
-  // }
+    // Progress monitoring
+    this.percentage = this.task.percentageChanges();
+    this.snapshot   = this.task.snapshotChanges().pipe(
+      tap(snap => {
+        if (snap.bytesTransferred === snap.totalBytes) {
+          // Update firestore on completion
+          this.db.collection('photos').add( { path, size: snap.totalBytes });
+        }
+      })
+    );
 
-  // removePost(post) {
-  //   this.postService.removePost(post)
-  //   .then(_ => this.router.navigate(['/post-list']));
-  // }
+    // The file's download URL
+    this.downloadUrl = this.task.downloadURL();
+  }
+
+  // Determines if the upload task is active
+  isActive(snapshot) {
+    return snapshot.state === 'running' && snapshot.bytesTransferred < snapshot.totalBytes;
+  }
 
 }
+
+
+//   startFileUpload(event: FileList) {
+//     const file = event.item(0);
+//     if (file.type.split('/')[0] !== 'image') {
+//       console.log('unsupported file type');
+//       return;
+//     }
+//     const path = `images/${new Date().getTime()}_${file.name}`;
+//     this.task = this.afStorage.upload(path, file);
+//     this.percent = this.task.percentageChanges();
+//     this.downloadUrl = this.task.downloadURL();
+//     this.snapshot = this.task.snapshotChanges().pipe(
+//       tap(snap => {
+//         if (snap.bytesTransferred === snap.totalBytes) {
+//           // Update firestore on completion
+//           this.db.collection('photos').add( { path, size: snap.totalBytes });
+// }
+// isUploadActive(snapshot) {
+//   return snapshot.state === 'running' && snapshot.bytesTransferred < snapshot.totalBytes;
+// }
+//       }
+
+
+// // startUpload(event: FileList) {
+// //   const file = event.item(0);
+// //   if (file.type.split('/')[0] !== 'image') {
+// //     console.log('unsupported file type');
+// //     return;
+// //   }
+// //   const path = `images/${new Date().getTime()}_${file.name}`;
+// //   this.task = this.afStorage.upload(path, file);
+// //   this.percent = this.task.percentageChanges();
+// //   this.snapshot = this.task.snapshotChanges().pipe(
+// //     tap(snap => {
+// //       if (snap.bytesTransferred === snap.totalBytes) {
+// //         this.db.list(`posts/${this.userId}`).push({ path});
+// //       }
+// //     })
+// //   );
+// //   this.downloadUrl = this.task.downloadURL();
+// //   console.log(this.downloadUrl);
+// // }
+
+
+// savePost(post) {
+//   const post$ = this.db.object('post');
+//   post$.set({
+//     title: this.title,
+//     imageUrls: this.downloadUrl,
+//     authorID: this.userId,
+//     authorName: this.userName,
+//     voteCount: 0,
+//     voters: [],
+//     isActive: true,
+//     createdDateTime: Date.now(),
+//     endDateTime: Date.now(),
+//   });
+// }
+
+
+
+//   // uploadFile(event: any ) {
+//   //   this.postService.uploadFiletoStorage(event);
+//   // }
+
+//   // savePost(post) {
+//   //   const createdDate = firebase.database.ServerValue.TIMESTAMP;
+//   //   const createdBy = this.postService.userId;
+//   //   this.postService.savePost(post);
+//   // }
+
+//   // removePost(post) {
+//   //   this.postService.removePost(post)
+//   //   .then(_ => this.router.navigate(['/post-list']));
+//   // }
+
+// }

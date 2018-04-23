@@ -10,7 +10,7 @@ export const environment = {
     authDomain: 'ippapp-47452.firebaseapp.com',
     databaseURL: 'https://ippapp-47452.firebaseio.com',
     projectId: 'ippapp-47452',
-    storageBucket: 'gs://ippapp-which/',
+    storageBucket: 'ippapp-47452.appspot.com',
     messagingSenderId: '734434237454'
   }
 };

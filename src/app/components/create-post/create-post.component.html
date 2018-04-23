@@ -1,11 +1,11 @@
-<div appdropZone (hovered)="toggleHover($event)" (dropped)="startUpload($event)">
+<div appdropZone (hovered)="toggleHover($event)" (dropped)="startUpload($event)" style="border: 1px solid black">
 
     <p>Drag and Drop a File</p>
     <div class="file">
         <label></label>
         <input type="file" (change)="startUpload($event.target.files)">
     </div>
-    <button (click)="task.cancel()">Cancel</button>
+    <!-- <button (click)="task.cancel()">Cancel</button>
 
 </div>
 
@@ -15,4 +15,21 @@
 
 <div *ngIf="downloadUrl | async as url">
     <img [src]="url">
-</div>
+</div> -->
+    <form>
+        <label>Post Title</label>
+        <input type="text" ngModel name="title" placeholder="Which outfit should I wear on my date? " />
+    </form>
+    <div *ngIf="snapshot | async as snap">
+
+        <div *ngIf="downloadUrl | async as url">
+            <h3>Results!</h3>
+            <img [src]="url"><br>
+            <a [href]="url" target="_blank" rel="noopener">Download Me!</a>
+        </div>
+
+        <button (click)="task.pause()" class="button is-warning" [disabled]="!isActive(snap)">Pause</button>
+        <button (click)="task.cancel()" class="button is-danger" [disabled]="!isActive(snap)">Cancel</button>
+        <button (click)="task.resume()" class="button is-info" [disabled]="!(snap?.state === 'paused')">Resume</button>
+
+    </div>

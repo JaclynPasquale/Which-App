@@ -11,11 +11,8 @@ import { Router } from '@angular/router';
 export class AppNavbarComponent implements OnInit {
 
   constructor(private auth: AuthService, private router: Router) { }
-  ngOnInit() {
-  }
+  ngOnInit() {}
     login() {
-      this.auth.login().then((user) => {
-        this.router.navigate(['/']);
-      });
+      this.auth.login();
+      }
   }
-}

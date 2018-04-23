@@ -23,12 +23,12 @@ import { AppComponent } from './app.component';
 
 import { AuthService } from './services/auth.service';
 import { UserService } from './services/user.service';
+import { PostService } from './services/post.service';
 
 import { HomeComponent } from './components/home/home.component';
 import { AppNavbarComponent } from './components/app-navbar/app-navbar.component';
 import { AuthGuard } from './guards/auth.guard';
 import { CreatePostComponent } from './components/create-post/create-post.component';
-import { PostService } from './services/post.service';
 import { DropZoneDirective } from './drop-zone.directive';
 
 
