@@ -5,22 +5,16 @@ import * as firebase from 'firebase/app';
 import { User } from '../models/User';
 import { List } from 'lodash';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { AngularFirestore } from 'angularfire2/firestore';
 
 @Injectable()
 export class UserService {
   // private subject: BehaviorSubject<User> = new
   // BehaviorSubject(null);
 
-  constructor(private db: AngularFireDatabase) { }
+  constructor(private db: AngularFirestore) { }
 
-  save(user: firebase.User) {
-    this.db.object('/users/' + user.uid).update({
-      name: user.displayName,
-      email: user.email
-    });
-  }
-
-  get(uid: string) {
-    return this.db.object('/users/' + uid);
+  getUser(uid: string) {
+    return this.db.collection('/users/' + uid);
   }
 }

@@ -48,7 +48,6 @@ export class AuthService {
 }
 private updateUserData(user) {
   // Sets user data to firestore on login
-
   const userRef: AngularFirestoreDocument<any> = this.afStore.doc(`users/${user.uid}`);
 
   const data: User = {
@@ -83,8 +82,13 @@ return userRef.set(data, { merge: true });
   isAuth() {
     return this.isAuthenticated;
   }
-  // getUser(user.uid): User {
-  //   return this.user;
-  // }
+  getUser(user) {
+    return this.afStore.collection('/users/' + user.uid);
+  }
+
+  getCurrentUser() {
+    let currentUser;
+    return currentUser = firebase.auth().currentUser;
+  }
 
 }

@@ -1,9 +1,12 @@
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { FormsModule } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore } from 'angularfire2/firestore';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { AngularFireStorage, AngularFireUploadTask } from 'angularfire2/storage';
 import { AngularFireDatabase, AngularFireObject, AngularFireList } from 'angularfire2/database';
 import { UserService } from '../../services/user.service';
 import { PostService } from '../../services/post.service';
+import * as firebase from 'firebase';
 
 import { User } from '../../models/User';
 import { Post } from '../../models/Post';
@@ -13,7 +16,8 @@ import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireAuth } from 'angularfire2/auth';
-import { getLocaleDateTimeFormat } from '@angular/common';
+import { getLocaleDateTimeFormat, PopStateEvent } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-create-post',
@@ -22,34 +26,36 @@ import { getLocaleDateTimeFormat } from '@angular/common';
 })
 
 export class CreatePostComponent {
-  posts$: AngularFireList<Post[]>;
-  post$: AngularFireObject<Post>;
+  posts$: AngularFirestoreCollection<Post[]>;
+  post$: AngularFirestoreDocument<Post>;
   isUploadActive: boolean;
   createdDate: Date;
   image: Picture;
   task: AngularFireUploadTask;
   percentage: Observable<number>;
   snapshot: Observable<any>;
-  downloadUrl: Observable<string>;
+  private _downloadUrl = new BehaviorSubject<string>('');
+  downloadUrl = this._downloadUrl as Observable<string>;
+  imageUrl: string;
   isHovering: boolean;
   userId: string;
   title: string;
   userName: string;
+  authorID;
+  authorName: string;
+  voteCount: 0;
+  voters: any[];
+  createdDateTime;
+  endDateTime;
 
   constructor(
     private postService: PostService,
+    private authService: AuthService,
     private userService: UserService,
     private afStorage: AngularFireStorage,
     private db: AngularFirestore,
     private afAuth: AngularFireAuth,
-
-  ) {
-  //   const bindPost = db.object('post').valueChanges();
-  //   this.afAuth.authState.subscribe(user => {
-  //     if (user) { return this.userId = user.uid;
-  //      }
-  // });
-  }
+  ) {}
 
   toggleHover(event: boolean) {
     this.isHovering = event;
@@ -65,109 +71,39 @@ export class CreatePostComponent {
       console.error('unsupported file type :( ');
       return;
     }
-
-    // The storage path
     const path = `/${new Date().getTime()}_${file.name}`;
-
-    // The main task
     this.task = this.afStorage.upload(path, file, );
-
-    // Progress monitoring
     this.percentage = this.task.percentageChanges();
     this.snapshot   = this.task.snapshotChanges().pipe(
       tap(snap => {
         if (snap.bytesTransferred === snap.totalBytes) {
-          // Update firestore on completion
           this.db.collection('photos').add( { path, size: snap.totalBytes });
         }
       })
     );
-
+    this.task.downloadURL().subscribe(downloadUrl => {
+      this._downloadUrl.next(downloadUrl);
+    });
     // The file's download URL
-    this.downloadUrl = this.task.downloadURL();
-  }
+    // this.task.downloadURL().toPromise().then(str => {
+    //   this.imageUrl = str;
+    // });
+    }
 
-  // Determines if the upload task is active
+    // Determines if the upload task is active
   isActive(snapshot) {
     return snapshot.state === 'running' && snapshot.bytesTransferred < snapshot.totalBytes;
   }
 
+  savePost(posts$) {
+    const authorID = this.authService.getCurrentUser().uid;
+    const imageUrl = this._downloadUrl.getValue();
+    const createdDateTime = firebase.firestore.FieldValue.serverTimestamp();
+    const voteCount = 0;
+    const votersID = [];
+    const title = 'which one?';
+
+    this.db.collection('posts').add({ authorID, imageUrl, createdDateTime, voteCount, votersID, title});
+  }
 }
 
-
-//   startFileUpload(event: FileList) {
-//     const file = event.item(0);
-//     if (file.type.split('/')[0] !== 'image') {
-//       console.log('unsupported file type');
-//       return;
-//     }
-//     const path = `images/${new Date().getTime()}_${file.name}`;
-//     this.task = this.afStorage.upload(path, file);
-//     this.percent = this.task.percentageChanges();
-//     this.downloadUrl = this.task.downloadURL();
-//     this.snapshot = this.task.snapshotChanges().pipe(
-//       tap(snap => {
-//         if (snap.bytesTransferred === snap.totalBytes) {
-//           // Update firestore on completion
-//           this.db.collection('photos').add( { path, size: snap.totalBytes });
-// }
-// isUploadActive(snapshot) {
-//   return snapshot.state === 'running' && snapshot.bytesTransferred < snapshot.totalBytes;
-// }
-//       }
-
-
-// // startUpload(event: FileList) {
-// //   const file = event.item(0);
-// //   if (file.type.split('/')[0] !== 'image') {
-// //     console.log('unsupported file type');
-// //     return;
-// //   }
-// //   const path = `images/${new Date().getTime()}_${file.name}`;
-// //   this.task = this.afStorage.upload(path, file);
-// //   this.percent = this.task.percentageChanges();
-// //   this.snapshot = this.task.snapshotChanges().pipe(
-// //     tap(snap => {
-// //       if (snap.bytesTransferred === snap.totalBytes) {
-// //         this.db.list(`posts/${this.userId}`).push({ path});
-// //       }
-// //     })
-// //   );
-// //   this.downloadUrl = this.task.downloadURL();
-// //   console.log(this.downloadUrl);
-// // }
-
-
-// savePost(post) {
-//   const post$ = this.db.object('post');
-//   post$.set({
-//     title: this.title,
-//     imageUrls: this.downloadUrl,
-//     authorID: this.userId,
-//     authorName: this.userName,
-//     voteCount: 0,
-//     voters: [],
-//     isActive: true,
-//     createdDateTime: Date.now(),
-//     endDateTime: Date.now(),
-//   });
-// }
-
-
-
-//   // uploadFile(event: any ) {
-//   //   this.postService.uploadFiletoStorage(event);
-//   // }
-
-//   // savePost(post) {
-//   //   const createdDate = firebase.database.ServerValue.TIMESTAMP;
-//   //   const createdBy = this.postService.userId;
-//   //   this.postService.savePost(post);
-//   // }
-
-//   // removePost(post) {
-//   //   this.postService.removePost(post)
-//   //   .then(_ => this.router.navigate(['/post-list']));
-//   // }
-
-// }

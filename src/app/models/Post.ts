@@ -9,7 +9,7 @@ export interface Post {
     authorID: User;
     authorName: User;
     voteCount: number;
-    voters: any[];
+    votersID: any[];
     isActive: boolean;
     createdDateTime: Date;
     endDateTime: Date;
