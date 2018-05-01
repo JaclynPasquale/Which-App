@@ -12,15 +12,16 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from 'angularfire2/storage';
 import { NumericDictionary } from 'lodash';
 import { tap } from 'rxjs/operators';
-import { AngularFirestore } from 'angularfire2/firestore';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class PostService {
   postsListChanged = new Subject<Post[]>();
   postChanged = new Subject<Post>();
-  private posts: Post[] = [];
-  private post: Post;
+  postViews: any = [];
+  private posts: AngularFirestoreCollection<Post[]>;
+  private post: AngularFirestoreDocument<Post>;
   task: AngularFireUploadTask;
   percent: Observable<number>;
   snapshot: Observable<any>;
@@ -50,12 +51,8 @@ isUploadActive(snapshot) {
   return snapshot.state === 'running' && snapshot.bytesTransferred < snapshot.totalBytes;
 }
 
-addPostToDB(post: Post, user: User) {
-  this.db.collection('posts').add(this.post);
-}
-
-fetchAllPosts() {
-  this.db
+fetchAllPosts(): Observable<any> {
+  return this.db
     .collection('posts')
     .snapshotChanges()
     .map(postArray => {
@@ -65,24 +62,19 @@ fetchAllPosts() {
           title: doc.payload.doc.data().title,
           authorID: doc.payload.doc.data().authorId,
           authorName: doc.payload.doc.data().authorName,
-          images: doc.payload.doc.data().imageUrl,
-          voteCount: doc.payload.doc.data().voteCount,
-          voters: doc.payload.doc.data().voters,
-          isActive: doc.payload.doc.data().isActive,
+          image1: doc.payload.doc.data().imageUrl1,
+          image2: doc.payload.doc.data().imageUrl2,
+          voteCount1: doc.payload.doc.data().voteCount1,
+          voteCount2: doc.payload.doc.data().voteCount2,
+          votersID: doc.payload.doc.data().votersId,
           createdDateTime: doc.payload.doc.data().createdTime,
           endDateTime: doc.payload.doc.data().endTime,
 
         };
       });
-    })
-    .subscribe((posts: Post[]) => {
-      this.posts = posts;
-      this.postsListChanged.next([...this.posts]);
     });
+    // .subscribe((posts) => {
+    //   this.postViews = posts;
+    //   this.postsListChanged.next([...this.posts]);
+    // });
 }
-
-addPostToDb(post: Post) {
-  this.db.collection('posts').add(post);
-}
-}
-

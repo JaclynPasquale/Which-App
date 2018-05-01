@@ -34,8 +34,9 @@ export class CreatePostComponent {
   task: AngularFireUploadTask;
   percentage: Observable<number>;
   snapshot: Observable<any>;
-  private _downloadUrl = new BehaviorSubject<string>('');
-  downloadUrl = this._downloadUrl as Observable<string>;
+  private _downloadUrls = [new BehaviorSubject<string>(''), new BehaviorSubject<string>('')];
+  downloadUrl1 = this._downloadUrls[0] as Observable<string>;
+  downloadUrl2 = this._downloadUrls[1] as Observable<string>;
   imageUrl: string;
   isHovering: boolean;
   userId: string;
@@ -62,7 +63,7 @@ export class CreatePostComponent {
   }
 
 
-  startUpload(event: FileList) {
+  startUpload(event: FileList, imageNumber: number) {
     // The File object
     const file = event.item(0);
 
@@ -72,7 +73,7 @@ export class CreatePostComponent {
       return;
     }
     const path = `/${new Date().getTime()}_${file.name}`;
-    this.task = this.afStorage.upload(path, file, );
+    this.task = this.afStorage.upload(path, file);
     this.percentage = this.task.percentageChanges();
     this.snapshot   = this.task.snapshotChanges().pipe(
       tap(snap => {
@@ -82,28 +83,26 @@ export class CreatePostComponent {
       })
     );
     this.task.downloadURL().subscribe(downloadUrl => {
-      this._downloadUrl.next(downloadUrl);
+      this._downloadUrls[imageNumber].next(downloadUrl);
     });
-    // The file's download URL
-    // this.task.downloadURL().toPromise().then(str => {
-    //   this.imageUrl = str;
-    // });
-    }
+ }
 
     // Determines if the upload task is active
   isActive(snapshot) {
     return snapshot.state === 'running' && snapshot.bytesTransferred < snapshot.totalBytes;
   }
 
-  savePost(posts$) {
+  savePost(posts) {
     const authorID = this.authService.getCurrentUser().uid;
-    const imageUrl = this._downloadUrl.getValue();
-    const createdDateTime = firebase.firestore.FieldValue.serverTimestamp();
+    const imageUrl1 = this._downloadUrls[0].getValue();
+    const imageUrl2 = this._downloadUrls[1].getValue();
+    const createdDateTime = new Date();
+    const endDateTime = new Date(createdDateTime.getTime() + 15 * 60000);
     const voteCount = 0;
     const votersID = [];
     const title = 'which one?';
 
-    this.db.collection('posts').add({ authorID, imageUrl, createdDateTime, voteCount, votersID, title});
+    this.db.collection('posts').add({ authorID, imageUrl1, imageUrl2, createdDateTime, endDateTime, voteCount, votersID, title});
   }
 }
 
