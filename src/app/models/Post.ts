@@ -3,14 +3,13 @@ import { Picture } from './Picture';
 
 export interface Post {
     $key: string;
-    title: string;
-    imageUrl: any[];
-    images: Picture[];
+    title?: string;
+    imageUrl1: string;
+    imageUrl2: string;
     authorID: User;
     authorName: User;
-    voteCount: number;
+    voteCount1: number;
     votersID: any[];
-    isActive: boolean;
     createdDateTime: Date;
     endDateTime: Date;
   }

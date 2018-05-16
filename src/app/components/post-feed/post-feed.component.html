@@ -1,0 +1,5 @@
+<ul>
+    <li *ngFor="let post of posts | async">{{post.title}}
+        <img src="{{post.image1}}"> {{post.voteCount1}}
+        <img src="{{post.image2}}"> {{post.voteCount2}}
+</ul>

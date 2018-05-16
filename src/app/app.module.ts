@@ -25,7 +25,7 @@ import { AuthService } from './services/auth.service';
 import { UserService } from './services/user.service';
 import { PostService } from './services/post.service';
 
-import { HomeComponent } from './components/home/home.component';
+import { PostFeedComponent } from './components/post-feed/post-feed.component';
 import { AppNavbarComponent } from './components/app-navbar/app-navbar.component';
 import { AuthGuard } from './guards/auth.guard';
 import { CreatePostComponent } from './components/create-post/create-post.component';
@@ -36,7 +36,7 @@ import { DropZoneDirective } from './drop-zone.directive';
   declarations: [
     AppComponent,
 
-    HomeComponent,
+    PostFeedComponent,
     AppNavbarComponent,
     CreatePostComponent,
     DropZoneDirective,
@@ -49,7 +49,7 @@ import { DropZoneDirective } from './drop-zone.directive';
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     RouterModule.forRoot([
-      { path: '', component: HomeComponent },
+      { path: '', component: PostFeedComponent },
       { path: 'post', component: CreatePostComponent},
 
     ])

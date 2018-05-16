@@ -68,13 +68,13 @@ fetchAllPosts(): Observable<any> {
           voteCount2: doc.payload.doc.data().voteCount2,
           votersID: doc.payload.doc.data().votersId,
           createdDateTime: doc.payload.doc.data().createdTime,
-          endDateTime: doc.payload.doc.data().endTime,
-
+          endDateTime: doc.payload.doc.data().endTime
         };
       });
     });
+}
+
     // .subscribe((posts) => {
     //   this.postViews = posts;
     //   this.postsListChanged.next([...this.posts]);
     // });
-}
