@@ -8,6 +8,7 @@ import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/fires
 import { AngularFireAuth } from 'angularfire2/auth';
 import { Post } from '../../models/Post';
 import { forEach } from '@firebase/util';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-home',
@@ -23,20 +24,28 @@ export class PostFeedComponent implements OnInit {
     private userService: UserService,
     private afStorage: AngularFireStorage,
     private db: AngularFirestore,
-    private afAuth: AngularFireAuth) { }
+    private afAuth: AngularFireAuth) {
+
+      // private endTime: Date;
+      // private futureString: string;
+      // private timeLeft: number;
+      // private $counter: Observable<number>;
+      // private subscription: Subscription;
+      // private message: string;
+    }
 
   ngOnInit() {
     this.posts = this.postService.fetchAllPosts();
 
-    function Countdown(posts) {
-      let startTime = this.posts.createdDateTime;
-      let endTime = this.posts.endDateTime;
-      let timeLeft = startTime - endTime;
-      console.log(timeLeft);
-      return timeLeft;
-    }
-    Countdown(this.posts);
-  }
+  //   function Countdown(posts) {
+  //     let startTime = this.posts.createdDateTime;
+  //     let endTime = this.posts.endDateTime;
+  //     let timeLeft = startTime - endTime;
+  //     console.log(timeLeft);
+  //     return timeLeft;
+  //   }
+  //   Countdown(this.posts);
+  // }
     // this.postService.fetchAllPosts()
     // .subscribe(posts => {
     //   this.posts = posts;
@@ -45,5 +54,4 @@ export class PostFeedComponent implements OnInit {
     // this.db.collection('posts').snapshotChanges().subscribe( posts => {
     //   console.log(posts);
     // });
-//  }
-//}
+// 

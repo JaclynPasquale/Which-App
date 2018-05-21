@@ -9,14 +9,14 @@
     <!-- <span> {{ appUser.name }}</span> -->
     <div class="header-actions">
         <div *ngIf="!(auth.user | async)?.uid">
-            <button type="button" (click)="auth.login()" class="nav-link nav-icon">
+            <a type="button" (click)="auth.login()" class="nav-link nav-icon">
           Login
-        </button>
+            </a>
         </div>
         <div *ngIf="(auth.user | async)?.uid">
-            <button type="button" (click)="auth.logout()" class="nav-link nav-icon">
+            <a type="button" (click)="auth.logout()" class="nav-link nav-icon">
                 Logout
-            </button>
+            </a>
         </div>
     </div>
 </header>

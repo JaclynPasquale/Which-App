@@ -1,0 +1,16 @@
+.drop-zone {
+    width: 300px;
+    height: 300px;
+    border: 2px #666 dashed;
+    margin: 10px;
+    text-align: center;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.img-result {
+    max-width: 300px;
+    max-height: 300px;
+}

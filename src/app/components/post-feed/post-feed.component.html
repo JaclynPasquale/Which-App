@@ -1,5 +1,36 @@
-<ul>
-    <li *ngFor="let post of posts | async">{{post.title}}
-        <img src="{{post.image1}}"> {{post.voteCount1}}
-        <img src="{{post.image2}}"> {{post.voteCount2}}
-</ul>
+<div class="row" *ngFor="let post of posts | async">
+    <div class="">
+        <div class="card">
+            <div class="card-header">
+                {{post.title}}
+            </div>
+            <div class="row">
+                <div class="card-block">
+                    <div class="card-img">
+                        <img src="{{post.image1}}">
+                    </div>
+
+                </div>
+                <div class="card-block">
+                    <div class="card-img">
+                        <img src="{{post.image2}}">
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-sm btn">Vote for 1</button>
+                <button class=" btn btn-sm btn">Vote for 2</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!-- <ul>
+    <li *ngFor="let post of posts | async ">{{post.title}}
+        <img src="{{post.image1}} "> {{post.voteCount1}}
+        <img src="{{post.image2}} "> {{post.voteCount2}}
+</ul> -->
