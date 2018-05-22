@@ -5,18 +5,12 @@
     <div class="header-nav">
         <a class="active nav-link nav-text" routerLink="/">Post Feed</a>
         <a routerLink="/post" class="nav-link nav-text">Create Post</a>
-    </div>
-    <!-- <span> {{ appUser.name }}</span> -->
-    <div class="header-actions">
-        <div *ngIf="!(auth.user | async)?.uid">
-            <a type="button" (click)="auth.login()" class="nav-link nav-icon">
+        <a *ngIf="!(auth.user | async)?.uid" (click)="auth.login()" class="nav-link nav-text">
           Login
             </a>
-        </div>
-        <div *ngIf="(auth.user | async)?.uid">
-            <a type="button" (click)="auth.logout()" class="nav-link nav-icon">
+
+        <a *ngIf="(auth.user | async)?.uid" (click)="auth.logout()" class="nav-link nav-text">
                 Logout
             </a>
-        </div>
     </div>
 </header>
