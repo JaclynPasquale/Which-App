@@ -14,7 +14,7 @@ export class UserService {
 
   constructor(private db: AngularFirestore) { }
 
-  getUser(uid: string) {
-    return this.db.collection('/users/' + uid);
-  }
+  // getUser(uid: string) {
+  //   return this.db.collection('/users/' + uid);
+  // }
 }

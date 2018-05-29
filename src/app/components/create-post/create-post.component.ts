@@ -98,11 +98,17 @@ export class CreatePostComponent {
     const imageUrl2 = this._downloadUrls[1].getValue();
     const createdDateTime = new Date();
     const endDateTime = new Date(createdDateTime.getTime() + 15 * 60000);
-    const voteCount = 0;
+    const voteCount1 = 0;
+    const voteCount2 = 0;
     const votersID = [];
     const title = 'which one?';
 
-    this.db.collection('posts').add({ authorID, imageUrl1, imageUrl2, createdDateTime, endDateTime, voteCount, votersID, title});
+    this.db.collection('posts').add({
+      authorID, imageUrl1, imageUrl2, createdDateTime, endDateTime, voteCount1, voteCount2, votersID, title
+    })
+    .then(function(docRef) {
+      const postID = docRef.id;
+  });
   }
 }
 

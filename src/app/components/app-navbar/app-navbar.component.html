@@ -6,11 +6,10 @@
         <a class="active nav-link nav-text" routerLink="/">Post Feed</a>
         <a routerLink="/post" class="nav-link nav-text">Create Post</a>
         <a *ngIf="!(auth.user | async)?.uid" (click)="auth.login()" class="nav-link nav-text">
-          Login
-            </a>
-
+            Login
+        </a>
         <a *ngIf="(auth.user | async)?.uid" (click)="auth.logout()" class="nav-link nav-text">
-                Logout
-            </a>
+            Logout
+        </a>
     </div>
 </header>

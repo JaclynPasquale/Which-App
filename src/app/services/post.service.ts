@@ -29,8 +29,7 @@ export class PostService {
   isHovering: boolean;
   @Input() user: User;
 
-constructor(private db: AngularFirestore, private Storage: AngularFireStorage) {
-}
+constructor(private db: AngularFirestore, private Storage: AngularFireStorage) { }
 
 startFileUpload(event: FileList) {
     const file = event.item(0);
@@ -72,9 +71,4 @@ fetchAllPosts(): Observable<any> {
         };
       });
     });
-}
 
-    // .subscribe((posts) => {
-    //   this.postViews = posts;
-    //   this.postsListChanged.next([...this.posts]);
-    // });

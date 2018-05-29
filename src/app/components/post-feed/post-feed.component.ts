@@ -9,6 +9,9 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { Post } from '../../models/Post';
 import { forEach } from '@firebase/util';
 import { Subscription } from 'rxjs/Subscription';
+import { auth } from 'firebase/app';
+import { snapshotChanges } from 'angularfire2/database';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -17,7 +20,10 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class PostFeedComponent implements OnInit {
 
+  postCollection: any;
+  allPosts: AngularFirestoreCollection<{}>;
   posts: Observable<any>;
+  user;
 
   constructor(private postService: PostService,
     private authService: AuthService,
@@ -36,6 +42,31 @@ export class PostFeedComponent implements OnInit {
 
   ngOnInit() {
     this.posts = this.postService.fetchAllPosts();
+    this.user = this.afAuth.auth.currentUser;
+    console.log(this.user);
+  }
+  voteFor1(user, post) {
+    console.log(user);
+    console.log(post);
+    const voter = this.user;
+    const whichpost = this.db.collection('posts').doc(post.$key);
+    const postCollection = this.db.collection('posts');
+    const postValues = whichpost.snapshotChanges();
+    postValues.subscribe((v: any) => {
+      whichpost.update({
+        'voteCount1': ++v.voteCount1,
+        'voterID': voter.uid
+      });
+      this.allPosts = this.postCollection.snapshotChanges().pipe(
+        map(actions => actions.map(a => {
+          const data = a.payload.doc.data() as Post;
+          const id = a.payload.doc.$key;
+          return { id, ...data };
+        }))
+      );
+
+    });
+  }
 
   //   function Countdown(posts) {
   //     let startTime = this.posts.createdDateTime;
@@ -54,4 +85,3 @@ export class PostFeedComponent implements OnInit {
     // this.db.collection('posts').snapshotChanges().subscribe( posts => {
     //   console.log(posts);
     // });
-// 

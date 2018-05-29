@@ -18,19 +18,9 @@
                 </div>
             </div>
             <div class="card-footer">
-                <button class="btn btn-sm btn">Vote for 1</button>
+                <button class="btn btn-sm btn" (click)="voteFor1(user.uid, post)">Vote for 1</button>
                 <button class=" btn btn-sm btn">Vote for 2</button>
             </div>
         </div>
     </div>
 </div>
-
-
-
-
-
-<!-- <ul>
-    <li *ngFor="let post of posts | async ">{{post.title}}
-        <img src="{{post.image1}} "> {{post.voteCount1}}
-        <img src="{{post.image2}} "> {{post.voteCount2}}
-</ul> -->

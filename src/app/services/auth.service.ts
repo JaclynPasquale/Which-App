@@ -43,7 +43,7 @@ export class AuthService {
     return this.afAuth.auth.signInWithPopup(provider)
     .then((credential) => {
       this.updateUserData(credential.user);
-      console.log(credential.user);
+      console.log(credential);
       });
 }
 private updateUserData(user) {
@@ -73,18 +73,19 @@ return userRef.set(data, { merge: true });
         this.router.navigate(['/post']);
       } else {
         this.authChanged.next(false);
-        this.router.navigate(['/home']);
+        this.router.navigate(['/post']);
         this.isAuthenticated = false;
       }
     });
   }
+  
 
-  isAuth() {
-    return this.isAuthenticated;
-  }
-  getUser(user) {
-    return this.afStore.collection('/users/' + user.uid);
-  }
+  // isAuth() {
+  //   return this.isAuthenticated;
+  // }
+  // getUser(user) {
+  //   return this.afStore.collection('/users/' + user.uid);
+  // }
 
   getCurrentUser() {
     let currentUser;
