@@ -45,12 +45,13 @@ import { DropZoneDirective } from './drop-zone.directive';
     BrowserModule,
     FormsModule,
     ClarityModule,
+    AngularFirestoreModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     RouterModule.forRoot([
       { path: '', component: PostFeedComponent },
-      { path: 'post', component: CreatePostComponent},
+      { path: 'createpost', component: CreatePostComponent},
 
     ])
   ],
@@ -60,9 +61,8 @@ import { DropZoneDirective } from './drop-zone.directive';
     PostService,
     AuthGuard,
     AngularFireDatabase,
-    AngularFireAuth,
-    AngularFireStorage,
-    AngularFirestore,
+    // AngularFireAuth,
+    AngularFireStorage
   ],
   bootstrap: [AppComponent]
 })

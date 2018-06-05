@@ -9,6 +9,7 @@ export interface Post {
     authorID: User;
     authorName: User;
     voteCount1: number;
+    voteCount2: number;
     votersID: any[];
     createdDateTime: Date;
     endDateTime: Date;

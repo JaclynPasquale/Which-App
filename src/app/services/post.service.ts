@@ -52,7 +52,7 @@ isUploadActive(snapshot) {
 
 fetchAllPosts(): Observable<any> {
   return this.db
-    .collection('posts')
+    .collection('posts', ref => ref.orderBy('createdDateTime', 'desc'))
     .snapshotChanges()
     .map(postArray => {
       return postArray.map(doc => {
@@ -71,4 +71,4 @@ fetchAllPosts(): Observable<any> {
         };
       });
     });
-
+  }}

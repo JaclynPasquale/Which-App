@@ -18,8 +18,8 @@
                 </div>
             </div>
             <div class="card-footer">
-                <button class="btn btn-sm btn" (click)="voteFor1(user.uid, post)">Vote for 1</button>
-                <button class=" btn btn-sm btn">Vote for 2</button>
+                <button class="btn btn-sm btn" (click)="voteFor(user.uid, post, 1)">Vote for 1</button>
+                <button class=" btn btn-sm btn" (click)="voteFor(user.uid, post, 2)">Vote for 2</button>
             </div>
         </div>
     </div>

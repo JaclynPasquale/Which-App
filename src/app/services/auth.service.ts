@@ -16,12 +16,17 @@ export class AuthService {
    private user: Observable<User>;
    authChanged = new Subject<boolean>();
    public isAuthenticated = false;
+   authState: any = null;
 
   constructor(
     private afAuth: AngularFireAuth,
     private afStore: AngularFirestore,
     private router: Router
   ) {
+    // tslint:disable-next-line:no-shadowed-variable
+    this.afAuth.authState.subscribe((auth) => {
+      return this.authState = auth;
+    });
       //// Get auth data, then get firestore user document || null
       this.user = this.afAuth.authState
         .switchMap(user => {
@@ -33,6 +38,18 @@ export class AuthService {
         });
   }
 
+  // get authenticated(): boolean {
+  //   return this.authState != null;
+  // }
+  // get currentUser(): any {
+  //   return this.authenticated ? this.authState : null;
+  // }
+  // get currentUserObservable(): any {
+  //   return this.afAuth.authState;
+  // }
+  // get currentUserId(): string {
+  //   return this.authenticated ? this.authState.uid : '';
+  // }
 
   login() {
     const provider = new firebase.auth.GoogleAuthProvider();
@@ -70,22 +87,14 @@ return userRef.set(data, { merge: true });
       if (user) {
         this.isAuthenticated = true;
         this.authChanged.next(true);
-        this.router.navigate(['/post']);
+        this.router.navigate(['/']);
       } else {
         this.authChanged.next(false);
-        this.router.navigate(['/post']);
+        this.router.navigate(['/createpost']);
         this.isAuthenticated = false;
       }
     });
   }
-  
-
-  // isAuth() {
-  //   return this.isAuthenticated;
-  // }
-  // getUser(user) {
-  //   return this.afStore.collection('/users/' + user.uid);
-  // }
 
   getCurrentUser() {
     let currentUser;

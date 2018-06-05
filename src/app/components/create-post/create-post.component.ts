@@ -100,12 +100,10 @@ export class CreatePostComponent {
     const endDateTime = new Date(createdDateTime.getTime() + 15 * 60000);
     const voteCount1 = 0;
     const voteCount2 = 0;
-    const votersID = [];
-    const title = 'which one?';
+    const title = '';
 
     this.db.collection('posts').add({
-      authorID, imageUrl1, imageUrl2, createdDateTime, endDateTime, voteCount1, voteCount2, votersID, title
-    })
+      authorID, imageUrl1, imageUrl2, createdDateTime, endDateTime, voteCount1, voteCount2, title })
     .then(function(docRef) {
       const postID = docRef.id;
   });
